@@ -34,9 +34,7 @@ function myfunction(e) {
         var start = red;
         var end = white;
 
-// given a number between -1 and 1 map to 0 and 100
         console.log(val);
-        val = (val + 1) * 50;
         if(val > 100) {
             val = 100;
         } else if(val < 0) {
