@@ -1,4 +1,5 @@
 from encoder import Model
+from generate_html import generate_sentiment_html
 
 positive_sample = """
 Just what I was looking for. Nice fitted pants, exactly
@@ -24,14 +25,16 @@ model = Model()
 
 positive = generate_strings(positive_sample)
 positive_text_features = model.transform(positive)
-print(positive_text_features[:, 2388])
+# print(positive_text_features[:, 2388])
+generate_sentiment_html(positive_text_features[:, 2388], positive_sample, "positive.html")
 
 negative = generate_strings(negative_sample)
 negative_text_features = model.transform(negative)
-print(negative_text_features[:, 2388])
-
+# print(negative_text_features[:, 2388])
+generate_sentiment_html(negative_text_features[:, 2388], negative_sample, "negative.html")
 
 complete = generate_strings(complete_sample)
 complete_text_features = model.transform(complete)
-print(complete_text_features[:, 2388])
+# print(complete_text_features[:, 2388])
+generate_sentiment_html(complete_text_features[:, 2388], complete_sample, "complete.html")
 
