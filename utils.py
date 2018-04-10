@@ -14,13 +14,18 @@ def train_with_reg_cv(trX, trY, vaX, vaY, teX=None, teY=None, penalty='l1',
         score = model.score(vaX, vaY)
         scores.append(score)
     c = C[np.argmax(scores)]
-    model = LogisticRegression(C=c, penalty=penalty, random_state=seed+len(C))
+    len_C=len(C)
+    return score_best_model(c, penalty, len_C, seed, teX, teY, trX, trY, vaX, vaY)
+
+
+def score_best_model(c, penalty, len_C, seed, trX, trY, vaX, vaY, teX=None, teY=None):
+    model = LogisticRegression(C=c, penalty=penalty, random_state=seed + len_C)
     model.fit(trX, trY)
     nnotzero = np.sum(model.coef_ != 0)
     if teX is not None and teY is not None:
-        score = model.score(teX, teY)*100.
+        score = model.score(teX, teY) * 100.
     else:
-        score = model.score(vaX, vaY)*100.
+        score = model.score(vaX, vaY) * 100.
     return score, c, nnotzero
 
 
