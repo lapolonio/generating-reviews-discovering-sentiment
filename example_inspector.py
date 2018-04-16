@@ -1,5 +1,3 @@
-from encoder import Model
-from generate_html import generate_sentiment_html
 
 positive_sample = """
 Just what I was looking for. Nice fitted pants, exactly
@@ -16,17 +14,15 @@ This is one of Crichton’s best books. The characters of Karen Ross, Peter Elli
 """
 
 
-def generate_strings(sample):
-    return [sample[1:x] for x in range(1, len(sample))]
-
-
 def generate_fine_grain_neuron_example(sample, html_name):
+    from generate_html import generate_sentiment_html
+    from encoder import Model
     model = Model()
-    iterative_strings = generate_strings(sample)
+    iterative_strings = [sample[1:x] for x in range(1, len(sample))]
     sample_features = model.transform(iterative_strings)
     generate_sentiment_html(sample_features[:, 2388], sample, html_name)
 
 
 generate_fine_grain_neuron_example(positive_sample, "positive.html")
-generate_fine_grain_neuron_example(negative_sample, "negative.html")
-generate_fine_grain_neuron_example(complete_sample, "complete.html")
+# generate_fine_grain_neuron_example(negative_sample, "negative.html")
+# generate_fine_grain_neuron_example(complete_sample, "complete.html")

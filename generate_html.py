@@ -48,8 +48,7 @@ def generate_letter_html(val):
         start = white
         end = green
         val = val % 51
-    else:
-        print("going to red")
+
     startColors = start
     endColors = end
     r = interpolate(startColors.r, endColors.r, 50, val)
