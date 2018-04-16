@@ -1,6 +1,20 @@
 import numpy as np
 
 
+class Color:
+    def __init__(self, _r, _g, _b):
+        self.r = _r;
+        self.g = _g;
+        self.b = _b;
+
+
+def interpolate(start, end, steps, count):
+    s = start
+    e = end
+    final = s + (((e - s) / steps) * count)
+    return np.floor(final)
+
+
 def generate_sentiment_html(sentiment_array, string, file_name):
     ###
     #  character_sentiment_array: sentiment value for each character in string
@@ -14,10 +28,35 @@ def generate_sentiment_html(sentiment_array, string, file_name):
 
     f = open(file_name, 'w')
     for x in range(1, len(string)):
-        val = sentiment_array[x - 1]
-        scaled_val = (((new_large - new_small)*(val - orig_small)) / (orig_large - orig_small)) + new_small
+        o_val = sentiment_array[x - 1]
+        val = (((new_large - new_small)*(o_val - orig_small)) / (orig_large - orig_small)) + new_small
 
-        f.write('<span value="%f" onmouseover="myfunction(this);">%s</span>' % (scaled_val, string[x]))
+        html_style, val = generate_letter_html(val)
+        f.write('<span value="%f" %s>%s</span>' % (val, html_style, string[x]))
+
+
+def generate_letter_html(val):
+
+    red = Color(232, 9, 26)
+    white = Color(255, 255, 255)
+    green = Color(6, 170, 60)
+
+    start = red
+    end = white
+
+    if val > 50:
+        start = white
+        end = green
+        val = val % 51
+    else:
+        print("going to red")
+    startColors = start
+    endColors = end
+    r = interpolate(startColors.r, endColors.r, 50, val)
+    g = interpolate(startColors.g, endColors.g, 50, val)
+    b = interpolate(startColors.b, endColors.b, 50, val)
+    html_style = 'style = "background-color: rgb(%d, %d, %d);"' % (r, g, b)
+    return html_style, val
 
 
 def main():
