@@ -20,19 +20,24 @@ def generate_sentiment_html(sentiment_array, string, file_name):
     #  character_sentiment_array: sentiment value for each character in string
     #
 
-    orig_large = max(sentiment_array)
-    orig_small = min(sentiment_array)
-
-    new_large = 100.0
-    new_small = 0.0
+    orig_max = max(sentiment_array)
+    orig_min = min(sentiment_array)
 
     f = open(file_name, 'w')
     for x in range(1, len(string)):
         o_val = sentiment_array[x - 1]
-        val = (((new_large - new_small)*(o_val - orig_small)) / (orig_large - orig_small)) + new_small
+
+        if o_val > 0:
+            val = rescale_val(o_val, orig_max, orig_min, 100, 50)
+        else:
+            val = rescale_val(o_val, orig_max, orig_min, 50, 0)
 
         html_style, val = generate_letter_html(val)
-        f.write('<span value="%f" %s>%s</span>' % (val, html_style, string[x]))
+        f.write('<span o_val="%f" value="%f" %s>%s</span>' % (o_val, val, html_style, string[x]))
+
+
+def rescale_val(o_val, orig_max, orig_min, new_max, new_min):
+    return (((new_max - new_min)*(o_val - orig_min)) / (orig_max - orig_min)) + new_min
 
 
 def generate_letter_html(val):
@@ -49,11 +54,11 @@ def generate_letter_html(val):
         end = green
         val = val % 51
 
-    startColors = start
-    endColors = end
-    r = interpolate(startColors.r, endColors.r, 50, val)
-    g = interpolate(startColors.g, endColors.g, 50, val)
-    b = interpolate(startColors.b, endColors.b, 50, val)
+    start_colors = start
+    end_colors = end
+    r = interpolate(start_colors.r, end_colors.r, 26, val)
+    g = interpolate(start_colors.g, end_colors.g, 26, val)
+    b = interpolate(start_colors.b, end_colors.b, 26, val)
     html_style = 'style = "background-color: rgb(%d, %d, %d);"' % (r, g, b)
     return html_style, val
 
@@ -200,7 +205,6 @@ def main():
                   -0.6058204, -0.89954, -1.0059762]
 
     complete_sample = "\nThis is one of Crichton's best books. The characters of Karen Ross, Peter Elliot, Munro, and Amy are beautifully developed and their interactions are exciting, complex, and fast-paced throughout this impressive novel. And about 99.8 percent of that got lost in the film. Seriously, the screenplay AND the directing were horrendous and clearly done by people who could not fathom what was good about the novel. I can't fault the actors because frankly, they never had a chance to make this turkey live up to Crichton's original work.  I know good novels, especially those with a science fiction edge, are hard to bring to the screen in a way that lives up to the original. But this may be the absolute worst disparity in quality between novel and screen adaptation ever. The book is really, really good. The movie is just dreadful."
-
 
     generate_sentiment_html(sentiments, complete_sample, 'output.html')
 
